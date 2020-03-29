@@ -6,13 +6,22 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/image"
+            android:src="@android:drawable/ic_menu_call"
+            android:padding="15dp"/>
 
         <TextView
             android:layout_height="wrap_content"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:text="Contact Name"
+            android:id="@+id/contactName_textview"
             android:textSize="20sp"
             android:padding="15dp"
             />
