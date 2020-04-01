@@ -39,7 +39,7 @@ public class ChatMessageAdapter extends ArrayAdapter<ChatMessage> {
         }
         ChatMessage chatMessage = getItem(position);
         TextView msgTxt = (TextView) listItemView.findViewById(R.id.message_text);
-        msgTxt.setText(chatMessage.getMessageText()+" "+position+" "+getItem(position).getIsMessageSent());
+        msgTxt.setText(chatMessage.getMessageText());
         TextView userTxt = (TextView) listItemView.findViewById(R.id.message_user);
         userTxt.setText(chatMessage.getMessageUser());
         TextView timeTxt = (TextView) listItemView.findViewById(R.id.message_time);

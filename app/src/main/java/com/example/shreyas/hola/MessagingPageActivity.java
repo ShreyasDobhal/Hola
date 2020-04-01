@@ -1,8 +1,12 @@
 package com.example.shreyas.hola;
 
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -11,11 +15,14 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class MessagingPageActivity extends AppCompatActivity {
+public class MessagingPageActivity extends AppCompatActivity  {
 
     private static int SIGN_IN_REQUEST_CODE=1;
     private ContactDisplay otherUser;
     RelativeLayout activity_main;
+
+    private int clickCount = 0;
+    private int lastItem = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,5 +58,42 @@ public class MessagingPageActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if (lastItem!=i) {
+                    lastItem=i;
+                    clickCount=1;
+                } else {
+                    clickCount+=1;
+                }
+
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (clickCount==1) {
+
+                        } else if (clickCount==2) {
+                            Toast.makeText(getApplicationContext(),"Double Click",Toast.LENGTH_SHORT).show();
+                        }
+                        clickCount=0;
+                    }
+                },500);
+
+            }
+        });
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Toast.makeText(getApplicationContext(),chatMessages.get(i).getMessageText(),Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+
     }
+
 }
