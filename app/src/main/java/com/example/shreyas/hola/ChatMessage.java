@@ -1,13 +1,18 @@
 package com.example.shreyas.hola;
 
 
-import java.util.Date;
-
 public class ChatMessage {
     private String messageText;
     private String messageUser;
     private String messageTime;
+    private boolean isMessageSent;
 
+    public ChatMessage(String messageText, String messageUser, String messageTime,boolean isMessageSent) {
+        this.messageText = messageText;
+        this.messageUser = messageUser;
+        this.messageTime = messageTime;
+        this.isMessageSent = isMessageSent;
+    }
     public ChatMessage(String messageText, String messageUser, String messageTime) {
         this.messageText = messageText;
         this.messageUser = messageUser;
@@ -16,7 +21,7 @@ public class ChatMessage {
     public ChatMessage(String messageText, String messageUser) {
         this.messageText = messageText;
         this.messageUser = messageUser;
-        messageTime = String.valueOf(new Date().getTime());
+        messageTime = timeStamp.getTime();
     }
     public ChatMessage() {
 
@@ -43,6 +48,10 @@ public class ChatMessage {
 
     public void setMessageUser(String messageUser) {
         this.messageUser = messageUser;
+    }
+
+    public boolean getIsMessageSent() {
+        return this.isMessageSent;
     }
 }
 

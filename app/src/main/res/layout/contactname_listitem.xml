@@ -23,9 +23,8 @@
             android:text="Contact Name"
             android:id="@+id/contactName_textview"
             android:textSize="20sp"
-            android:textColor="@android:color/white"
-            android:padding="15dp"
-            />
+            android:textColor="@color/colorText"
+            android:padding="15dp"/>
 
     </LinearLayout>
 

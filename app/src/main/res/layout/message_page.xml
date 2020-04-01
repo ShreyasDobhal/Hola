@@ -9,60 +9,46 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:paddingTop="16dp"
-    android:background="@drawable/wallpaper"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
     tools:context=".MessagingPageActivity">
-
-    <!--
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!" />
-    -->
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
         android:src="@drawable/ic_send"
-        android:id="@+id/fab"
+        android:id="@+id/sendbtn"
         android:tint="@android:color/white"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:text="Send"
-        />
+        android:text="Send"/>
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/fab"
+        android:layout_toLeftOf="@+id/sendbtn"
         android:layout_alignParentBottom="true"
-        android:id="@+id/input"
-        android:textColor="@android:color/white"
+        android:id="@+id/inputtxt"
+        android:textColor="@color/colorText"
+        android:inputType="textCapSentences"
         android:layout_alignParentStart="true"/>
 
     <ListView
         android:id="@+id/list_of_message"
         android:stackFromBottom="true"
+        android:transcriptMode="alwaysScroll"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:layout_above="@+id/fab"
+        android:layout_above="@+id/sendbtn"
         android:dividerHeight="16dp"
         android:divider="@android:color/transparent"
         android:layout_marginBottom="16dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+
         android:textColor="@android:color/white">
+
     </ListView>
+
 </RelativeLayout>
-
-
-
-
-
-<!--
-<?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-</android.support.constraint.ConstraintLayout>
--->

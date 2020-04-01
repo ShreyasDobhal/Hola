@@ -1,6 +1,8 @@
 package com.example.shreyas.hola;
 
-public class ContactDisplay {
+import java.io.Serializable;
+
+public class ContactDisplay implements Serializable {
     private String name;
     private int displayImgPath;
     public ContactDisplay(String name) {
