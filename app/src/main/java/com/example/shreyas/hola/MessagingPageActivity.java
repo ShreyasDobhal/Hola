@@ -13,12 +13,23 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 
 public class MessagingPageActivity extends AppCompatActivity  {
 
-    private static int SIGN_IN_REQUEST_CODE=1;
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mMessagesDatabaseReference;
+    private ChildEventListener mChildEventListener;
+
     private ContactDisplay otherUser;
+    private ContactDisplay currentUser;
+
     RelativeLayout activity_main;
 
     private int clickCount = 0;
@@ -30,14 +41,16 @@ public class MessagingPageActivity extends AppCompatActivity  {
         setContentView(R.layout.message_page);
 
         otherUser = (ContactDisplay) getIntent().getSerializableExtra("ContactDisplay");
+        currentUser = new ContactDisplay("Shreyas");
 
         String otherContact = otherUser.getName();
-        String messages[] = {"Hello","Good morning","How are you"};
-        String time[] = {"8:00","8:05","8:10"};
+//        String messages[] = {"Hello","Good morning","How are you"};
+//        String time[] = {"8:00","8:05","8:10"};
+
         final ArrayList<ChatMessage> chatMessages = new ArrayList<>();
-        for (int i=0;i<messages.length;i++) {
-            chatMessages.add(new ChatMessage(messages[i],otherContact,time[i]));
-        }
+//        for (int i=0;i<messages.length;i++) {
+//            chatMessages.add(new ChatMessage(messages[i],otherContact,time[i]));
+//        }
 
         final ChatMessageAdapter itemsAdapter = new ChatMessageAdapter(this, chatMessages);
         final ListView listView = (ListView) findViewById(R.id.list_of_message);
@@ -46,18 +59,58 @@ public class MessagingPageActivity extends AppCompatActivity  {
         final EditText txtInput = (EditText) findViewById(R.id.inputtxt);
         Button sendBtn = (Button) findViewById(R.id.sendbtn);
 
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mMessagesDatabaseReference = mFirebaseDatabase.getReference().child("messages");
+
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String msg = txtInput.getText().toString();
                 if (msg.length()>0) {
                     msg = msg.trim();
-                    chatMessages.add(new ChatMessage(msg,"You",timeStamp.getTime(),true));
-                    itemsAdapter.notifyDataSetChanged();
+                    ChatMessage sentMessage = new ChatMessage(msg,"You",timeStamp.getTime(),true);
+//                    ChatMessage receivedMessage = new ChatMessage(msg,currentUser.getName(),timeStamp.getTime(),false);
+//                    chatMessages.add(new ChatMessage(msg,"You",timeStamp.getTime(),true));
+//                    itemsAdapter.notifyDataSetChanged();
                     txtInput.setText("");
+
+                    mMessagesDatabaseReference.push().setValue(sentMessage);
+                    Toast.makeText(getApplicationContext(),"Message sent",Toast.LENGTH_SHORT).show();
                 }
             }
         });
+
+        mChildEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                ChatMessage message = dataSnapshot.getValue(ChatMessage.class);
+                chatMessages.add(message);
+                itemsAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+        mMessagesDatabaseReference.addChildEventListener(mChildEventListener);
+
 
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
