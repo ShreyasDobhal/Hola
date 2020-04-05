@@ -5,8 +5,10 @@ import java.io.Serializable;
 public class ContactDisplay implements Serializable {
     private String name;
     private int displayImgPath;
-    public ContactDisplay(String name) {
+    private String uid;
+    public ContactDisplay(String name,String uid) {
         this.name = name;
+        this.uid = uid;
     }
 
     public String getName(){
@@ -15,5 +17,9 @@ public class ContactDisplay implements Serializable {
 
     public int getDisplayImgPath() {
         return displayImgPath;
+    }
+
+    public String getUID() {
+        return uid;
     }
 }

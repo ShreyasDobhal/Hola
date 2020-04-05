@@ -18,8 +18,12 @@ import android.widget.Toast;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +36,11 @@ public class MainActivity extends AppCompatActivity {
 
 //    private FirebaseAuth mAuth;
     private FirebaseAuth mFirebaseAuth;
-    private  FirebaseAuth.AuthStateListener mAuthStateListener;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mMessagesDatabaseReference;
+    private ChildEventListener mChildEventListener;
+
 
     private ContactDisplayAdapter itemsAdapter;
 
@@ -51,8 +59,9 @@ public class MainActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user!=null) {
-                    onSignedInInitialize(user.getDisplayName());
-                    Toast.makeText(getApplicationContext(),user.getDisplayName()+" Signed in successfully",Toast.LENGTH_SHORT).show();
+                    onSignedInInitialize(user);
+
+//                    Toast.makeText(getApplicationContext(),user.getDisplayName()+" Signed in successfully",Toast.LENGTH_SHORT).show();
                 } else {
 //                    startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().setProviders(AuthUI.EMAIL_PROVIDER,AuthUI.GOOGLE_PROVIDER).build(),RC_SIGN_IN);
                     onSignedOutCleanup();
@@ -80,9 +89,9 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode,resultCode,data);
         if (requestCode==RC_SIGN_IN) {
             if (resultCode==RESULT_OK) {
-                Toast.makeText(getApplicationContext(),"Signed in",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(),"Signed in",Toast.LENGTH_SHORT).show();
             } else if (resultCode==RESULT_CANCELED) {
-                Toast.makeText(getApplicationContext(),"Sign in cancelled",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(),"Sign in cancelled",Toast.LENGTH_SHORT).show();
                 finish();
             }
         }
@@ -109,20 +118,78 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void onSignedInInitialize(String username) {
-        currentUser = new User(username);
+    private void onSignedInInitialize(FirebaseUser user) {
+        currentUser = new User(user.getDisplayName());
+        currentUser.setUID(user.getUid());
+//        user.
+
 
 
         // Load Contacts form DB
-        String names[] = {"Shreyas","Sheru","Mummy","Papa"};
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mMessagesDatabaseReference = mFirebaseDatabase.getReference().child("users");
+
+        mMessagesDatabaseReference.orderByChild("uid").equalTo(currentUser.getUID()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Toast.makeText(getApplicationContext(),"Welcome "+currentUser.getUsername(),Toast.LENGTH_SHORT).show();
+                } else {
+                    // New User Sign-up
+                    mMessagesDatabaseReference.push().setValue(currentUser);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
         final ArrayList<ContactDisplay> contacts = new ArrayList<>();
-        for (int i=0;i<names.length;i++) {
-            contacts.add(new ContactDisplay(names[i]));
-        }
+//        for (int i=0;i<names.length;i++) {
+//            contacts.add(new ContactDisplay(names[i]));
+//        }
 
         itemsAdapter = new ContactDisplayAdapter(this, contacts);
         ListView listView = (ListView) findViewById(R.id.list);
         listView.setAdapter(itemsAdapter);
+
+        mMessagesDatabaseReference.orderByChild("username").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                User user = dataSnapshot.getValue(User.class);
+                if (!user.getUID().equals(currentUser.getUID())) {
+                    contacts.add(new ContactDisplay(user.getUsername(),user.getUID()));
+                    itemsAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+
+
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -156,7 +223,38 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
 
-    private void attachListeners() {
+    private void attachListener() {
+        if (mChildEventListener == null) {
+            mChildEventListener = new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+//                    ChatMessage message = dataSnapshot.getValue(ChatMessage.class);
+//                    chatMessages.add(message);
+//                    itemsAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            mMessagesDatabaseReference.addChildEventListener(mChildEventListener);
+        }
 
     }
 

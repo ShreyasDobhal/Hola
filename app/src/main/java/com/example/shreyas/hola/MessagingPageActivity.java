@@ -24,7 +24,8 @@ import java.util.ArrayList;
 public class MessagingPageActivity extends AppCompatActivity  {
 
     private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mMessagesDatabaseReference;
+    private DatabaseReference mMessagesDatabaseReference1;
+    private DatabaseReference mMessagesDatabaseReference2;
     private ChildEventListener mChildEventListener;
 
     private ArrayList<ChatMessage> chatMessages;
@@ -56,7 +57,9 @@ public class MessagingPageActivity extends AppCompatActivity  {
         Button sendBtn = (Button) findViewById(R.id.sendbtn);
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mMessagesDatabaseReference = mFirebaseDatabase.getReference().child("messages");
+        mMessagesDatabaseReference1 = mFirebaseDatabase.getReference().child("allMessages").child(currentUser.getUID()).child(otherUser.getUID());
+        mMessagesDatabaseReference2 = mFirebaseDatabase.getReference().child("allMessages").child(otherUser.getUID()).child(currentUser.getUID());
+//        mMessagesDatabaseReference2 = mFirebaseDatabase.getReference().child("messages");
 
         // Send button click
         sendBtn.setOnClickListener(new View.OnClickListener() {
@@ -65,10 +68,13 @@ public class MessagingPageActivity extends AppCompatActivity  {
                 String msg = txtInput.getText().toString();
                 if (msg.length()>0) {
                     msg = msg.trim();
-                    ChatMessage sentMessage = new ChatMessage(msg,"You",timeStamp.getTime(),true);
+                    String msgTime = timeStamp.getTime();
+                    ChatMessage sentMessage = new ChatMessage(msg,"You",msgTime,true);
+                    ChatMessage receivedMessage = new ChatMessage(msg,currentUser.getUsername(),msgTime,false);
                     txtInput.setText("");
 
-                    mMessagesDatabaseReference.push().setValue(sentMessage);
+                    mMessagesDatabaseReference1.push().setValue(sentMessage);
+                    mMessagesDatabaseReference2.push().setValue(receivedMessage);
                     Toast.makeText(getApplicationContext(),"Message sent",Toast.LENGTH_SHORT).show();
                 }
             }
@@ -148,14 +154,14 @@ public class MessagingPageActivity extends AppCompatActivity  {
 
                 }
             };
-            mMessagesDatabaseReference.addChildEventListener(mChildEventListener);
+            mMessagesDatabaseReference1.addChildEventListener(mChildEventListener);
         }
 
     }
 
     private void detachListener() {
         if (mChildEventListener !=null) {
-            mMessagesDatabaseReference.removeEventListener(mChildEventListener);
+            mMessagesDatabaseReference1.removeEventListener(mChildEventListener);
             mChildEventListener = null;
         }
     }
