@@ -27,8 +27,11 @@ public class MessagingPageActivity extends AppCompatActivity  {
     private DatabaseReference mMessagesDatabaseReference;
     private ChildEventListener mChildEventListener;
 
+    private ArrayList<ChatMessage> chatMessages;
+    private ChatMessageAdapter itemsAdapter;
+
     private ContactDisplay otherUser;
-    private ContactDisplay currentUser;
+    private User currentUser;
 
     RelativeLayout activity_main;
 
@@ -41,18 +44,11 @@ public class MessagingPageActivity extends AppCompatActivity  {
         setContentView(R.layout.message_page);
 
         otherUser = (ContactDisplay) getIntent().getSerializableExtra("ContactDisplay");
-        currentUser = new ContactDisplay("Shreyas");
+        currentUser = (User) getIntent().getSerializableExtra("User");
 
-        String otherContact = otherUser.getName();
-//        String messages[] = {"Hello","Good morning","How are you"};
-//        String time[] = {"8:00","8:05","8:10"};
+        chatMessages = new ArrayList<>();
 
-        final ArrayList<ChatMessage> chatMessages = new ArrayList<>();
-//        for (int i=0;i<messages.length;i++) {
-//            chatMessages.add(new ChatMessage(messages[i],otherContact,time[i]));
-//        }
-
-        final ChatMessageAdapter itemsAdapter = new ChatMessageAdapter(this, chatMessages);
+        itemsAdapter = new ChatMessageAdapter(this, chatMessages);
         final ListView listView = (ListView) findViewById(R.id.list_of_message);
         listView.setAdapter(itemsAdapter);
 
@@ -62,6 +58,7 @@ public class MessagingPageActivity extends AppCompatActivity  {
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mMessagesDatabaseReference = mFirebaseDatabase.getReference().child("messages");
 
+        // Send button click
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -69,9 +66,6 @@ public class MessagingPageActivity extends AppCompatActivity  {
                 if (msg.length()>0) {
                     msg = msg.trim();
                     ChatMessage sentMessage = new ChatMessage(msg,"You",timeStamp.getTime(),true);
-//                    ChatMessage receivedMessage = new ChatMessage(msg,currentUser.getName(),timeStamp.getTime(),false);
-//                    chatMessages.add(new ChatMessage(msg,"You",timeStamp.getTime(),true));
-//                    itemsAdapter.notifyDataSetChanged();
                     txtInput.setText("");
 
                     mMessagesDatabaseReference.push().setValue(sentMessage);
@@ -80,39 +74,13 @@ public class MessagingPageActivity extends AppCompatActivity  {
             }
         });
 
-        mChildEventListener = new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                ChatMessage message = dataSnapshot.getValue(ChatMessage.class);
-                chatMessages.add(message);
-                itemsAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-
-        mMessagesDatabaseReference.addChildEventListener(mChildEventListener);
+        // Data updated in Firebase Database
+        attachListener();
 
 
 
+
+        // Message click (single / double)
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -139,6 +107,7 @@ public class MessagingPageActivity extends AppCompatActivity  {
             }
         });
 
+        // Message Long Press
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -147,6 +116,67 @@ public class MessagingPageActivity extends AppCompatActivity  {
             }
         });
 
+    }
+
+    private void attachListener() {
+        if (mChildEventListener == null) {
+            mChildEventListener = new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    ChatMessage message = dataSnapshot.getValue(ChatMessage.class);
+                    chatMessages.add(message);
+                    itemsAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            mMessagesDatabaseReference.addChildEventListener(mChildEventListener);
+        }
+
+    }
+
+    private void detachListener() {
+        if (mChildEventListener !=null) {
+            mMessagesDatabaseReference.removeEventListener(mChildEventListener);
+            mChildEventListener = null;
+        }
+    }
+
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+//        if (mAuthStateListener !=null) {
+//            mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
+//        }
+//        detachListener();
+//        itemsAdapter.clear();
+
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+//        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+//        attachListener();
     }
 
 }
