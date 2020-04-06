@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -45,8 +46,41 @@ public class ChatMessageAdapter extends ArrayAdapter<ChatMessage> {
         TextView timeTxt = (TextView) listItemView.findViewById(R.id.message_time);
         timeTxt.setText(chatMessage.getMessageTime());
 
-//        ImageView img = (ImageView)listItemView.findViewById(R.id.image);
-//        img.setImageResource(contact.getDisplayImgPath());
+        LinearLayout message_block = (LinearLayout) listItemView.findViewById(R.id.message_block);
+        LinearLayout reply_block = (LinearLayout) listItemView.findViewById(R.id.reply_block);
+        TextView replyToUserTxt = (TextView) listItemView.findViewById(R.id.message_replyToUser);
+        TextView replyToMsgTxt = (TextView) listItemView.findViewById(R.id.message_replyToMessage);
+        ImageView imgView = (ImageView)listItemView.findViewById(R.id.message_image);
+        TextView likeTxt = (TextView) listItemView.findViewById(R.id.message_like);
+
+
+        if (chatMessage.getReplyToMessage() == null || chatMessage.getReplyToMessage().equals("")) {
+//            message_block.removeView(reply_block);
+            reply_block.setVisibility(View.GONE);
+            Log.e("LOG","not a reply");
+        } else {
+            reply_block.setVisibility(View.VISIBLE);
+            if (replyToMsgTxt == null) {
+                Log.e("LOG","replyToMsgTxt was null");
+            }
+            replyToMsgTxt.setText(chatMessage.getReplyToMessage());
+            replyToUserTxt.setText(chatMessage.getReplyToUser());
+            Log.e("LOG","replying done");
+        }
+
+        if (chatMessage.getImageURL() == null) {
+//            message_block.removeView(img);
+            imgView.setVisibility(View.GONE);
+        } else {
+            // TODO display image
+            imgView.setVisibility(View.VISIBLE);
+        }
+
+        if (chatMessage.getIsLiked()) {
+            likeTxt.setVisibility(View.VISIBLE);
+        } else {
+            likeTxt.setVisibility(View.GONE);
+        }
 
         return listItemView;
     }

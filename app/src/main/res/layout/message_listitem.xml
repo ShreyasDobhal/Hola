@@ -18,13 +18,51 @@
         android:background="@color/colorMessageBackground"
         android:padding="5dp">
 
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/message_user"
             android:text="You"
-            android:layout_marginRight="4dp"
+            android:layout_marginEnd="4dp"
             android:textColor="@color/colorNameText"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="150sp"
+            android:orientation="vertical"
+            android:id="@+id/reply_block"
+            android:background="@color/colorMessageDarkerBackground"
+
+            android:padding="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/message_replyToUser"
+                android:text="Anonymous"
+                android:layout_marginEnd="4dp"
+                android:textColor="@color/colorNameText"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/message_replyToMessage"
+                android:text="Hola"
+                android:padding="2dp"
+                android:layout_margin="3dp"/>
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/message_image"
+            android:src="@drawable/img"
+            android:padding="5dp"/>
 
         <LinearLayout
             android:orientation="horizontal"
@@ -47,6 +85,13 @@
                 android:layout_marginLeft="-30dp"
                 android:layout_gravity="bottom"/>
         </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/message_like"
+            android:text="♥"
+            android:textColor="@color/colorLikeSymbol"/>
 
     </LinearLayout>
 

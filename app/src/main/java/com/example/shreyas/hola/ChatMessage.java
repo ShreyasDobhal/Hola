@@ -5,7 +5,13 @@ public class ChatMessage {
     private String messageText;
     private String messageUser;
     private String messageTime;
+    private String replyToUser;
+    private String replyToMessage;
+    private String imageURL;
+    private boolean isLiked;
     private boolean isMessageSent;
+    private String id;
+    private String replyId;
 
     public ChatMessage(String messageText, String messageUser, String messageTime,boolean isMessageSent) {
         this.messageText = messageText;
@@ -52,6 +58,54 @@ public class ChatMessage {
 
     public boolean getIsMessageSent() {
         return this.isMessageSent;
+    }
+
+    public void setReplyToUser(String replyToUser) {
+        this.replyToUser = replyToUser;
+    }
+
+    public String getReplyToUser() {
+        return replyToUser;
+    }
+
+    public void setReplyToMessage(String replyToMessage) {
+        this.replyToMessage = replyToMessage;
+    }
+
+    public String getReplyToMessage() {
+        return replyToMessage;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setIsLiked(boolean isLiked) {
+        this.isLiked = isLiked;
+    }
+
+    public boolean getIsLiked() {
+        return isLiked;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setReplyId(String replyId) {
+        this.replyId = replyId;
+    }
+
+    public String getReplyId() {
+        return replyId;
     }
 }
 

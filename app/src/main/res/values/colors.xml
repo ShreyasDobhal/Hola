@@ -7,4 +7,6 @@
     <color name="colorText">#212020</color>
     <color name="colorNameText">#33a676</color>
     <color name="colorMessageBackground">#eee</color>
+    <color name="colorMessageDarkerBackground">#ddd</color>
+    <color name="colorLikeSymbol">#bf283f</color>
 </resources>
