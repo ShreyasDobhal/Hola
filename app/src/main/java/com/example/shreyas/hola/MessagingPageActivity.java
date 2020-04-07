@@ -1,8 +1,11 @@
 package com.example.shreyas.hola;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Handler;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +19,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -27,6 +31,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -140,7 +145,6 @@ public class MessagingPageActivity extends AppCompatActivity  {
                     }
 
                     if (imageURL != null) {
-                        sentMessage.setMessageText("Image "+imageURL);
                         sentMessage.setImageURL(imageURL);
                         receivedMessage.setImageURL(imageURL);
                         imageURL = null;
@@ -343,18 +347,54 @@ public class MessagingPageActivity extends AppCompatActivity  {
         Log.e("LOG","Activity executed");
         if (requestCode == RC_PHOTO_PICKER && resultCode == RESULT_OK) {
             Log.e("LOG","Selected a file");
+
             Uri selectedImageUri = data.getData();
             StorageReference photoRef = mChatPhotoStorageReference.child(selectedImageUri.getLastPathSegment());
-            photoRef.putFile(selectedImageUri).addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                    imageURL = downloadUrl.toString();
-                    Toast.makeText(getApplicationContext(),"Photo uploaded",Toast.LENGTH_SHORT).show();
-                    txtInput.setText("Image");
-                    Log.e("LOG","Image URL : "+downloadUrl);
-                }
-            });
+
+            try {
+                Bitmap bmp = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bmp.compress(Bitmap.CompressFormat.JPEG, 25, baos);
+                byte[] imgdata = baos.toByteArray();
+                //uploading the image
+                UploadTask uploadTask2 = photoRef.putBytes(imgdata);
+                uploadTask2.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Log.e("LOG","Compressed successfully");
+                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        imageURL = downloadUrl.toString();
+                        Toast.makeText(getApplicationContext(),"Photo uploaded",Toast.LENGTH_SHORT).show();
+                        txtInput.setText("Image");
+                        Log.e("LOG","Image URL : "+downloadUrl);
+//                        Toast.makeText(getApplicationContext(), "Upload successful", Toast.LENGTH_LONG).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getApplicationContext(), "Upload Failed", Toast.LENGTH_LONG).show();
+                    }
+                });
+            } catch (Exception e) {
+                Log.e("LOG","Failed to compress");
+                photoRef.putFile(selectedImageUri).addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        imageURL = downloadUrl.toString();
+                        Toast.makeText(getApplicationContext(),"Photo uploaded",Toast.LENGTH_SHORT).show();
+                        txtInput.setText("Image");
+                        Log.e("LOG","Image URL : "+downloadUrl);
+                    }
+                });
+            }
+
+
+
+
+//            StorageReference photoRef = mChatPhotoStorageReference.child(selectedImageUri.getLastPathSegment());
+//            photoRef.child(UserDetails.username+"profilepic.jpg");
+
         }
     }
 
