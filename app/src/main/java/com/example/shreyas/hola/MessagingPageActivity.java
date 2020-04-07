@@ -119,7 +119,7 @@ public class MessagingPageActivity extends AppCompatActivity  {
                         receivedMessage.setReplyToMessage(replyDisplayMsg);
 
                         sentMessage.setReplyId(replyMessage.getId());
-                        receivedMessage.setReplyId(replyMessage.getId());
+                        receivedMessage.setReplyId(chatMessagePair.get(chatMessageIndexMap.get(replyMessage.getId())));
 
                         Log.e("LOG",sentMessage.getReplyToUser()+" "+sentMessage.getReplyToMessage());
 
@@ -189,12 +189,18 @@ public class MessagingPageActivity extends AppCompatActivity  {
                     @Override
                     public void run() {
                         if (clickCount==1) {
-                            // Reply text clear
+
                             if (isSingleClick) {
                                 if (chatMessages.get(i).getReplyId() != null && !chatMessages.get(i).getReplyId().equals("")) {
-                                    int pos = chatMessageIndexMap.get(chatMessages.get(i).getReplyId());
-                                    Log.e("LOG","Reply message Position "+pos);
-                                    listView.setSelection(pos);
+                                    int pos;
+                                    if (chatMessageIndexMap.containsKey(chatMessages.get(i).getReplyId())) {
+                                        pos = chatMessageIndexMap.get(chatMessages.get(i).getReplyId());
+                                        Log.e("LOG","Reply message Position "+pos);
+                                        listView.setSelection(pos);
+                                    } else {
+//                                        pos = chatMessagePair
+                                    }
+
                                 }
 
                             }
