@@ -25,7 +25,7 @@ public class ContactDisplayAdapter extends ArrayAdapter<ContactDisplay> {
                     R.layout.contactname_listitem, parent, false);
         }
         ContactDisplay contact = getItem(position);
-        TextView txtView = (TextView) listItemView.findViewById(R.id.contactName_textview);
+        TextView txtView = (TextView) listItemView.findViewById(R.id.contact_name);
         txtView.setText(contact.getName());
 //        ImageView img = (ImageView)listItemView.findViewById(R.id.image);
 //        img.setImageResource(contact.getDisplayImgPath());
