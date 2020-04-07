@@ -20,11 +20,16 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
 
 public class MessagingPageActivity extends AppCompatActivity  {
 
@@ -32,7 +37,8 @@ public class MessagingPageActivity extends AppCompatActivity  {
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mMessagesDatabaseReference1;
     private DatabaseReference mMessagesDatabaseReference2;
-    private ChildEventListener mChildEventListener;
+    private ChildEventListener mChildEventListener1;
+    private ChildEventListener mChildEventListener2;
     // Firebase Storage
     private FirebaseStorage mFirebaseStorage;
     private StorageReference mChatPhotoStorageReference;
@@ -41,6 +47,7 @@ public class MessagingPageActivity extends AppCompatActivity  {
     private ArrayList<ChatMessage> chatMessages;
     private HashMap<String,ChatMessage> chatMessageMap;
     private HashMap<String,Integer> chatMessageIndexMap;
+    private ArrayList<String> chatMessagePair;
     private ChatMessageAdapter itemsAdapter;
 
     private ContactDisplay otherUser;
@@ -66,6 +73,7 @@ public class MessagingPageActivity extends AppCompatActivity  {
         chatMessages = new ArrayList<>();
         chatMessageMap = new HashMap<>();
         chatMessageIndexMap = new HashMap<>();
+        chatMessagePair = new ArrayList<>();
 
         itemsAdapter = new ChatMessageAdapter(this, chatMessages);
         final ListView listView = (ListView) findViewById(R.id.list_of_message);
@@ -90,6 +98,9 @@ public class MessagingPageActivity extends AppCompatActivity  {
                     String msgTime = timeStamp.getTime();
                     ChatMessage sentMessage = new ChatMessage(msg,"You",msgTime,true);
                     ChatMessage receivedMessage = new ChatMessage(msg,currentUser.getUsername(),msgTime,false);
+
+                    sentMessage.setPairId("");
+                    receivedMessage.setPairId("");
 
                     if (replyMessage != null) {
                         Log.e("LOG","replying to message");
@@ -124,6 +135,21 @@ public class MessagingPageActivity extends AppCompatActivity  {
 
                     mMessagesDatabaseReference1.push().setValue(sentMessage);
                     mMessagesDatabaseReference2.push().setValue(receivedMessage);
+                    // mMessagesDatabaseReference1.child(chatMessages.get(i).getId()).child("isLiked").setValue(likeVal);
+
+//                    mMessagesDatabaseReference2.orderByKey().limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(DataSnapshot dataSnapshot) {
+//                            HashMap<String,Object> tmp = (HashMap<String,Object>) dataSnapshot.getValue();
+//                            String id = tmp.keySet().toArray()[0].toString();
+//                            mMessagesDatabaseReference1.child(chatMessages.get(i).getId()).child("isLiked").setValue(likeVal);
+//                        }
+//                        @Override
+//                        public void onCancelled(DatabaseError databaseError) {
+//
+//                        }
+//                    });
+
                     Toast.makeText(getApplicationContext(),"Message sent",Toast.LENGTH_SHORT).show();
                 }
             }
@@ -182,6 +208,8 @@ public class MessagingPageActivity extends AppCompatActivity  {
                             }
 //                            chatMessages.get(i).setIsLiked(false);
                             mMessagesDatabaseReference1.child(chatMessages.get(i).getId()).child("isLiked").setValue(likeVal);
+                            mMessagesDatabaseReference2.child(chatMessagePair.get(i)).child("isLiked").setValue(likeVal);
+
                             Log.e("LOG","liked : "+likeVal);
 //                            Toast.makeText(getApplicationContext(),"Double Click",Toast.LENGTH_SHORT).show();
                         }
@@ -211,14 +239,17 @@ public class MessagingPageActivity extends AppCompatActivity  {
     }
 
     private void attachListener() {
-        if (mChildEventListener == null) {
-            mChildEventListener = new ChildEventListener() {
+//        final Queue<String> queue1 = new LinkedList<>();
+//        final Queue<String> queue2 = new LinkedList<>();
+        if (mChildEventListener1 == null) {
+            mChildEventListener1 = new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     ChatMessage message = dataSnapshot.getValue(ChatMessage.class);
                     message.setId(dataSnapshot.getKey());
                     chatMessageMap.put(message.getId(),message);
                     chatMessageIndexMap.put(message.getId(),chatMessages.size());
+//                    queue1.add(message.getId());
                     chatMessages.add(message);
                     itemsAdapter.notifyDataSetChanged();
                 }
@@ -248,15 +279,53 @@ public class MessagingPageActivity extends AppCompatActivity  {
 
                 }
             };
-            mMessagesDatabaseReference1.addChildEventListener(mChildEventListener);
+
+
+            mMessagesDatabaseReference1.addChildEventListener(mChildEventListener1);
+        }
+
+        if (mChildEventListener2 == null) {
+            mChildEventListener2 = new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    ChatMessage message = dataSnapshot.getValue(ChatMessage.class);
+                    message.setId(dataSnapshot.getKey());
+                    chatMessagePair.add(message.getId());
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+
+
+            mMessagesDatabaseReference2.addChildEventListener(mChildEventListener2);
         }
 
     }
 
     private void detachListener() {
-        if (mChildEventListener !=null) {
-            mMessagesDatabaseReference1.removeEventListener(mChildEventListener);
-            mChildEventListener = null;
+        if (mChildEventListener1 !=null) {
+            mMessagesDatabaseReference1.removeEventListener(mChildEventListener1);
+            mChildEventListener1 = null;
+        } else {
+            mMessagesDatabaseReference2.removeEventListener(mChildEventListener2);
+            mChildEventListener2 = null;
         }
     }
 

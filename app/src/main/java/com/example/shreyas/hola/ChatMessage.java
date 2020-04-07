@@ -12,6 +12,7 @@ public class ChatMessage {
     private boolean isMessageSent;
     private String id;
     private String replyId;
+    private String pairId;
 
     public ChatMessage(String messageText, String messageUser, String messageTime,boolean isMessageSent) {
         this.messageText = messageText;
@@ -106,6 +107,14 @@ public class ChatMessage {
 
     public String getReplyId() {
         return replyId;
+    }
+
+    public void setPairId(String pairId) {
+        this.pairId = pairId;
+    }
+
+    public String getPairId() {
+        return pairId;
     }
 }
 
