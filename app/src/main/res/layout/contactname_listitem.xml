@@ -14,17 +14,64 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/image"
-            android:src="@android:drawable/ic_menu_call"
+            android:src="@drawable/face"
             android:padding="15dp"/>
 
-        <TextView
-            android:layout_height="wrap_content"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:text="Contact Name"
-            android:id="@+id/contactName_textview"
-            android:textSize="20sp"
-            android:textColor="@color/colorText"
-            android:padding="15dp"/>
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="10dp">
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="Contact Name"
+                android:id="@+id/contact_name"
+                android:textSize="20sp"
+                android:textColor="@color/colorText"
+                android:paddingLeft="15dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="5dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Last message"
+                android:id="@+id/last_message"
+                android:paddingLeft="20dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="!"
+                android:id="@+id/unread_message_count"
+                android:background="@drawable/rounded_textview"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"
+                android:gravity="center"
+                android:layout_gravity="right"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="30dp"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="8:00"
+                android:id="@+id/message_time"
+                android:layout_gravity="right"
+                android:paddingTop="15dp"
+                android:paddingRight="30dp"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 

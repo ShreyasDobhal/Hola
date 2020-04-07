@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#f7f7f7</color>
-    <color name="colorPrimaryDark">#bab6b6</color>
+    <!-- <color name="colorPrimary">#f7f7f7</color> -->
+    <!-- <color name="colorPrimaryDark">#bab6b6</color> -->
+    <color name="colorPrimary">#212020</color>
+    <color name="colorPrimaryDark">#111010</color>
     <color name="colorAccent">#356ac4</color>
     <color name="colorTitle">#212020</color>
     <color name="colorText">#212020</color>
@@ -9,4 +11,5 @@
     <color name="colorMessageBackground">#eee</color>
     <color name="colorMessageDarkerBackground">#ddd</color>
     <color name="colorLikeSymbol">#bf283f</color>
+    <color name="colorUnreadMsgBackgrund">#3275a8</color>
 </resources>
