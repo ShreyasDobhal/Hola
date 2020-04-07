@@ -13,6 +13,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
@@ -73,7 +75,15 @@ public class ChatMessageAdapter extends ArrayAdapter<ChatMessage> {
             imgView.setVisibility(View.GONE);
         } else {
             // TODO display image
+//            boolean isPhoto = message.getPhotoUrl() != null;
+
             imgView.setVisibility(View.VISIBLE);
+            Glide.with(imgView.getContext())
+                    .load(chatMessage.getImageURL())
+                    .into(imgView);
+
+
+
         }
 
         if (chatMessage.getIsLiked()) {

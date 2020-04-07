@@ -25,8 +25,10 @@ public class ContactDisplayAdapter extends ArrayAdapter<ContactDisplay> {
                     R.layout.contactname_listitem, parent, false);
         }
         ContactDisplay contact = getItem(position);
-        TextView txtView = (TextView) listItemView.findViewById(R.id.contact_name);
-        txtView.setText(contact.getName());
+        TextView txtName = (TextView) listItemView.findViewById(R.id.contact_name);
+        txtName.setText(contact.getName());
+        TextView txtLastMsg = (TextView) listItemView.findViewById(R.id.last_message);
+        txtLastMsg.setText(contact.getLastMessage());
 //        ImageView img = (ImageView)listItemView.findViewById(R.id.image);
 //        img.setImageResource(contact.getDisplayImgPath());
 

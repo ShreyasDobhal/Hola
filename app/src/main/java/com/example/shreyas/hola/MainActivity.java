@@ -160,7 +160,10 @@ public class MainActivity extends AppCompatActivity {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 User user = dataSnapshot.getValue(User.class);
                 if (!user.getUID().equals(currentUser.getUID())) {
-                    contacts.add(new ContactDisplay(user.getUsername(),user.getUID()));
+                    ContactDisplay contact = new ContactDisplay(user.getUsername(),user.getUID());
+//                    dataSnapshot.
+//                    contact.setLastMessage();
+                    contacts.add(contact);
                     itemsAdapter.notifyDataSetChanged();
                 }
             }

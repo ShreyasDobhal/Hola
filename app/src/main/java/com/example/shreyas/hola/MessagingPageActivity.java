@@ -1,6 +1,7 @@
 package com.example.shreyas.hola;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,6 +64,11 @@ public class MessagingPageActivity extends AppCompatActivity  {
     private boolean isSingleClick = true;
 
     private static final int RC_PHOTO_PICKER =  2;
+    public static final int RC_SIGN_IN = 1;
+
+    private String imageURL;
+
+    private EditText txtInput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +87,7 @@ public class MessagingPageActivity extends AppCompatActivity  {
         final ListView listView = (ListView) findViewById(R.id.list_of_message);
         listView.setAdapter(itemsAdapter);
 
-        final EditText txtInput = (EditText) findViewById(R.id.inputtxt);
+        txtInput = (EditText) findViewById(R.id.inputtxt);
         Button sendBtn = (Button) findViewById(R.id.sendbtn);
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -131,24 +139,17 @@ public class MessagingPageActivity extends AppCompatActivity  {
                         receivedMessage.setReplyToMessage("");
                     }
 
+                    if (imageURL != null) {
+                        sentMessage.setMessageText("Image "+imageURL);
+                        sentMessage.setImageURL(imageURL);
+                        receivedMessage.setImageURL(imageURL);
+                        imageURL = null;
+                    }
+
                     txtInput.setText("");
 
                     mMessagesDatabaseReference1.push().setValue(sentMessage);
                     mMessagesDatabaseReference2.push().setValue(receivedMessage);
-                    // mMessagesDatabaseReference1.child(chatMessages.get(i).getId()).child("isLiked").setValue(likeVal);
-
-//                    mMessagesDatabaseReference2.orderByKey().limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(DataSnapshot dataSnapshot) {
-//                            HashMap<String,Object> tmp = (HashMap<String,Object>) dataSnapshot.getValue();
-//                            String id = tmp.keySet().toArray()[0].toString();
-//                            mMessagesDatabaseReference1.child(chatMessages.get(i).getId()).child("isLiked").setValue(likeVal);
-//                        }
-//                        @Override
-//                        public void onCancelled(DatabaseError databaseError) {
-//
-//                        }
-//                    });
 
                     Toast.makeText(getApplicationContext(),"Message sent",Toast.LENGTH_SHORT).show();
                 }
@@ -335,6 +336,27 @@ public class MessagingPageActivity extends AppCompatActivity  {
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode,int resultCode,Intent data) {
+
+        super.onActivityResult(requestCode,resultCode,data);
+        Log.e("LOG","Activity executed");
+        if (requestCode == RC_PHOTO_PICKER && resultCode == RESULT_OK) {
+            Log.e("LOG","Selected a file");
+            Uri selectedImageUri = data.getData();
+            StorageReference photoRef = mChatPhotoStorageReference.child(selectedImageUri.getLastPathSegment());
+            photoRef.putFile(selectedImageUri).addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    imageURL = downloadUrl.toString();
+                    Toast.makeText(getApplicationContext(),"Photo uploaded",Toast.LENGTH_SHORT).show();
+                    txtInput.setText("Image");
+                    Log.e("LOG","Image URL : "+downloadUrl);
+                }
+            });
+        }
+    }
 
     @Override
     protected void onPause(){

@@ -6,6 +6,7 @@ public class ContactDisplay implements Serializable {
     private String name;
     private int displayImgPath;
     private String uid;
+    private String lastMessage="";
     public ContactDisplay(String name,String uid) {
         this.name = name;
         this.uid = uid;
@@ -21,5 +22,13 @@ public class ContactDisplay implements Serializable {
 
     public String getUID() {
         return uid;
+    }
+
+    public void setLastMessage(String lastMessage) {
+        this.lastMessage = lastMessage;
+    }
+
+    public String getLastMessage() {
+        return lastMessage;
     }
 }
