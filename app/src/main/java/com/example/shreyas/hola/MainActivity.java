@@ -1,6 +1,9 @@
 package com.example.shreyas.hola;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,9 +27,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -39,10 +45,19 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mMessagesDatabaseReference;
+    private DatabaseReference mMessagesDatabaseReferenceLastMsg;
     private ChildEventListener mChildEventListener;
 
+    // Notifications
+    private static final String CHANNEL_ID="shreyas_dobhal";
+    private static final String CHANNEL_NAME="Shreyas";
+    private static final String CHANNEL_DESC = "Notification example";
 
     private ContactDisplayAdapter itemsAdapter;
+
+    private HashMap<String,ContactDisplay> usersMap;
+    private HashMap<String,String> lastMsgMap;
+    private HashMap<String,String> lastTimeMap;
 
     private User currentUser;
 
@@ -53,6 +68,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Firebase Auth
         mFirebaseAuth = FirebaseAuth.getInstance();
+        usersMap = new HashMap<>();
+        lastMsgMap = new HashMap<>();
+        lastTimeMap = new HashMap<>();
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -121,13 +139,17 @@ public class MainActivity extends AppCompatActivity {
     private void onSignedInInitialize(FirebaseUser user) {
         currentUser = new User(user.getDisplayName());
         currentUser.setUID(user.getUid());
+        currentUser.setFCMToken(FirebaseInstanceId.getInstance().getToken());
 //        user.
+
+//        notificationInit();
 
 
 
         // Load Contacts form DB
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mMessagesDatabaseReference = mFirebaseDatabase.getReference().child("users");
+        mMessagesDatabaseReferenceLastMsg = mFirebaseDatabase.getReference().child("lastMessages");
 
         mMessagesDatabaseReference.orderByChild("uid").equalTo(currentUser.getUID()).addValueEventListener(new ValueEventListener() {
             @Override
@@ -155,15 +177,19 @@ public class MainActivity extends AppCompatActivity {
         ListView listView = (ListView) findViewById(R.id.list);
         listView.setAdapter(itemsAdapter);
 
+
         mMessagesDatabaseReference.orderByChild("username").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 User user = dataSnapshot.getValue(User.class);
                 if (!user.getUID().equals(currentUser.getUID())) {
                     ContactDisplay contact = new ContactDisplay(user.getUsername(),user.getUID());
+                    contact.setFCMToken(user.getFCMToken());
 //                    dataSnapshot.
 //                    contact.setLastMessage();
+                    Log.e("LSTMSG","other user "+user.getUsername());
                     contacts.add(contact);
+                    usersMap.put(user.getUID(),contact);
                     itemsAdapter.notifyDataSetChanged();
                 }
             }
@@ -190,6 +216,44 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        mMessagesDatabaseReferenceLastMsg.child(currentUser.getUID()).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Log.e("LOG","child added");
+                HashMap<String,Object> lstMsg = (HashMap<String,Object>)dataSnapshot.getValue();
+                Log.e("LOG","Data "+lstMsg.toString());
+                if (lstMsg != null) {
+                    lstMsg = (HashMap<String,Object>)lstMsg.get("message");
+                    Log.e("LSTMSG","last message not null "+lstMsg.get("messageText").toString());
+                    String lastMessageText = lstMsg.get("messageText").toString();
+                    if (lastMessageText!=null && lastMessageText.length() > 30) {
+                        lastMessageText = lastMessageText.substring(0,30)+"..";
+                    }
+                    usersMap.get(dataSnapshot.getKey()).setLastMessage(lastMessageText);
+                    usersMap.get(dataSnapshot.getKey()).setLastMessageTime(lstMsg.get("messageTime").toString());
+                    itemsAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
 
 
@@ -259,6 +323,22 @@ public class MainActivity extends AppCompatActivity {
             mMessagesDatabaseReference.addChildEventListener(mChildEventListener);
         }
 
+    }
+
+    private void notificationInit() {
+
+        FirebaseMessaging.getInstance().subscribeToTopic("Updates");
+
+        String id = FirebaseInstanceId.getInstance().getToken();
+        Log.e("LOG","FCM "+id);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Log.e("LOG","Creating channel");
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setDescription(CHANNEL_DESC);
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+        }
     }
 
     private void detachListener() {

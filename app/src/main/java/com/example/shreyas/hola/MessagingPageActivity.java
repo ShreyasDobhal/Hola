@@ -1,11 +1,17 @@
 package com.example.shreyas.hola;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +33,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -45,11 +52,15 @@ public class MessagingPageActivity extends AppCompatActivity  {
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mMessagesDatabaseReference1;
     private DatabaseReference mMessagesDatabaseReference2;
+    private DatabaseReference mMessagesDatabaseReferenceLastMsg1;
+    private DatabaseReference mMessagesDatabaseReferenceLastMsg2;
     private ChildEventListener mChildEventListener1;
     private ChildEventListener mChildEventListener2;
     // Firebase Storage
     private FirebaseStorage mFirebaseStorage;
     private StorageReference mChatPhotoStorageReference;
+
+
 
 
     private ArrayList<ChatMessage> chatMessages;
@@ -100,11 +111,18 @@ public class MessagingPageActivity extends AppCompatActivity  {
         mMessagesDatabaseReference1 = mFirebaseDatabase.getReference().child("allMessages").child(currentUser.getUID()).child(otherUser.getUID());
         mMessagesDatabaseReference2 = mFirebaseDatabase.getReference().child("allMessages").child(otherUser.getUID()).child(currentUser.getUID());
         mChatPhotoStorageReference = mFirebaseStorage.getReference().child("chat_photos");
+        mMessagesDatabaseReferenceLastMsg1 = mFirebaseDatabase.getReference().child("lastMessages").child(currentUser.getUID()).child(otherUser.getUID());
+        mMessagesDatabaseReferenceLastMsg2 = mFirebaseDatabase.getReference().child("lastMessages").child(otherUser.getUID()).child(currentUser.getUID());
+
+//        notificationInit();
 
         // Send button click
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+//                displayNotification();
+
                 String msg = txtInput.getText().toString();
                 if (msg.length()>0) {
                     msg = msg.trim();
@@ -154,6 +172,11 @@ public class MessagingPageActivity extends AppCompatActivity  {
 
                     mMessagesDatabaseReference1.push().setValue(sentMessage);
                     mMessagesDatabaseReference2.push().setValue(receivedMessage);
+
+                    mMessagesDatabaseReferenceLastMsg1.child("message").setValue(sentMessage);
+                    mMessagesDatabaseReferenceLastMsg2.child("message").setValue(receivedMessage);
+
+//                    NotificationHelper.displayNotification(getApplicationContext(),currentUser.getUsername(),sentMessage.getMessageText());
 
                     Toast.makeText(getApplicationContext(),"Message sent",Toast.LENGTH_SHORT).show();
                 }
@@ -397,6 +420,10 @@ public class MessagingPageActivity extends AppCompatActivity  {
 
         }
     }
+
+
+
+
 
     @Override
     protected void onPause(){

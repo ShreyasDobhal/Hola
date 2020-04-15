@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class User implements Serializable {
     private String username;
     private String uid;
+    private String fcmToken;
     public User() {
 
     }
@@ -22,5 +23,12 @@ public class User implements Serializable {
     }
     public void setUID(String uid) {
         this.uid=uid;
+    }
+
+    public String getFCMToken() {
+        return  fcmToken;
+    }
+    public void setFCMToken(String fcmToken) {
+        this.fcmToken=fcmToken;
     }
 }
