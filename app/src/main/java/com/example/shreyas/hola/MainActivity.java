@@ -237,6 +237,20 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Log.e("LOG","child added");
+                HashMap<String,Object> lstMsg = (HashMap<String,Object>)dataSnapshot.getValue();
+                Log.e("LOG","Data "+lstMsg.toString());
+                if (lstMsg != null) {
+                    lstMsg = (HashMap<String,Object>)lstMsg.get("message");
+                    Log.e("LSTMSG","last message not null "+lstMsg.get("messageText").toString());
+                    String lastMessageText = lstMsg.get("messageText").toString();
+                    if (lastMessageText!=null && lastMessageText.length() > 30) {
+                        lastMessageText = lastMessageText.substring(0,30)+"..";
+                    }
+                    usersMap.get(dataSnapshot.getKey()).setLastMessage(lastMessageText);
+                    usersMap.get(dataSnapshot.getKey()).setLastMessageTime(lstMsg.get("messageTime").toString());
+                    itemsAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override
