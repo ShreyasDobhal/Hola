@@ -92,7 +92,9 @@
             android:layout_height="wrap_content"
             android:id="@+id/message_like"
             android:text="♥"
+            android:layout_marginLeft="2dp"
             android:textColor="@color/colorLikeSymbol"/>
+
 
     </LinearLayout>
 

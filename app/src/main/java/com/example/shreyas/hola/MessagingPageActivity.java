@@ -295,7 +295,7 @@ public class MessagingPageActivity extends AppCompatActivity  {
 //                    message.setId(dataSnapshot.getKey());
 //                    chatMessages.add(message);
                     itemsAdapter.notifyDataSetChanged();
-                    Toast.makeText(getApplicationContext(),"Liked : "+chatMessageMap.get(dataSnapshot.getKey()).getIsLiked(),Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getApplicationContext(),"Liked : "+chatMessageMap.get(dataSnapshot.getKey()).getIsLiked(),Toast.LENGTH_SHORT).show();
                 }
 
                 @Override

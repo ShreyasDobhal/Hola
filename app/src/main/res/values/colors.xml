@@ -12,4 +12,5 @@
     <color name="colorMessageDarkerBackground">#ddd</color>
     <color name="colorLikeSymbol">#bf283f</color>
     <color name="colorUnreadMsgBackgrund">#3275a8</color>
+    <color name="colorSeenTickMark">#2453d4</color>
 </resources>
