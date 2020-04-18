@@ -5,6 +5,7 @@
     <color name="colorPrimary">#212020</color>
     <color name="colorPrimaryDark">#111010</color>
     <color name="colorAccent">#356ac4</color>
+    <color name="colorToolbarText">#fafafa</color>
     <color name="colorTitle">#212020</color>
     <color name="colorText">#212020</color>
     <color name="colorNameText">#33a676</color>

@@ -6,12 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="16dp"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="16dp"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="0dp"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
     tools:context=".MessagingPageActivity">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/message_page_toolbar"/>
 
     <Button
         android:layout_width="wrap_content"

@@ -14,6 +14,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -23,6 +24,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -91,8 +93,25 @@ public class MessagingPageActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.message_page);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
         otherUser = (ContactDisplay) getIntent().getSerializableExtra("ContactDisplay");
         currentUser = (User) getIntent().getSerializableExtra("User");
+
+
+        if (toolbar==null) {
+            Log.e("LOG","toolbar null");
+        } else {
+            TextView toolbarTxt = (TextView) toolbar.findViewById(R.id.toolbar_text);
+            String firstName = otherUser.getName();
+            if (firstName.indexOf(' ')!=-1)
+                firstName = firstName.substring(0,firstName.indexOf(' '));
+            toolbarTxt.setText(firstName);
+        }
+
 
         chatMessages = new ArrayList<>();
         chatMessageMap = new HashMap<>();

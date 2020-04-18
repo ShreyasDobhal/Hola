@@ -7,12 +7,15 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 //import com.google.firebase.auth.FirebaseAuth;
@@ -65,6 +68,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        TextView toolbarTxt = (TextView) toolbar.findViewById(R.id.toolbar_text);
+        toolbarTxt.setText("Hola");
+
 
         // Firebase Auth
         mFirebaseAuth = FirebaseAuth.getInstance();
