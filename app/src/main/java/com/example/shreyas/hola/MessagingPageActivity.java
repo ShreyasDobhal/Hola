@@ -95,7 +95,7 @@ public class MessagingPageActivity extends AppCompatActivity  {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
         otherUser = (ContactDisplay) getIntent().getSerializableExtra("ContactDisplay");
