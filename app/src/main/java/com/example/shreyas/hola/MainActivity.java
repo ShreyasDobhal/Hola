@@ -2,6 +2,7 @@ package com.example.shreyas.hola;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -9,6 +10,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -70,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
     private User currentUser;
 
     private DrawerLayout drawer;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,14 +85,30 @@ public class MainActivity extends AppCompatActivity {
         toolbarTxt.setText("Hola");
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.nav_edit_name:
+                        Log.e("PROFILE","Going to edit profile");
+                        Intent intent = new Intent(MainActivity.this,ProfileActivity.class);
+                        intent.putExtra("User",currentUser);
+                        MainActivity.this.startActivity(intent);
                         Toast.makeText(getApplicationContext(),"Edit profile",Toast.LENGTH_SHORT).show();
 //                        getSupportFragmentManager().beginTransaction().replace(R.id.fr)
+                        break;
+                    case R.id.nav_sign_out:
+                        new AlertDialog.Builder(MainActivity.this)
+                                .setTitle("Sign Out")
+                                .setMessage("Are you sure you want to Sign Out ?")
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        AuthUI.getInstance().signOut(MainActivity.this);
+                                        Toast.makeText(MainActivity.this, "Signed Out", Toast.LENGTH_SHORT).show();
+                                    }})
+                                .setNegativeButton(android.R.string.no, null).show();
                         break;
                 }
                 drawer.closeDrawer(GravityCompat.START);
@@ -174,9 +193,22 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void onSignedInInitialize(FirebaseUser user) {
+
         currentUser = new User(user.getDisplayName());
         currentUser.setUID(user.getUid());
         currentUser.setFCMToken(FirebaseInstanceId.getInstance().getToken());
+
+//        TextView usrTxt = (TextView) navigationView.findViewById(R.layout.nav_header);
+
+        TextView usrTxt = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_username);
+        TextView emailTxt = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_email);
+
+        usrTxt.setText(currentUser.getUsername());
+        emailTxt.setText(user.getEmail());
+
+        //nav_header
+        // nav_username
+
 //        user.
 
 //        notificationInit();
@@ -315,7 +347,6 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this,MessagingPageActivity.class);
                 intent.putExtra("ContactDisplay",contacts.get(i));
                 intent.putExtra("User",currentUser);
-//                intent.putExtra("ContactDisplay",contacts.get(i));
                 MainActivity.this.startActivity(intent);
             }
         });

@@ -3,15 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
-
-        <item android:id="@+id/nav_edit_dp"
-            android:icon="@drawable/ic_account"
-            android:title="Edit profile picture"/>
+    <group >
 
         <item android:id="@+id/nav_edit_name"
             android:icon="@drawable/ic_account"
-            android:title="Edit display name"/>
+            android:title="Edit Profile"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:fontFamily="sans-serif-light"/>
+
+        <item android:id="@+id/nav_sign_out"
+            android:icon="@drawable/ic_lock"
+            android:title="Sign Out"/>
 
     </group>
 
@@ -19,7 +21,8 @@
         <menu>
             <item android:id="@+id/nav_share"
                 android:icon="@drawable/ic_share"
-                android:title="Share"/>
+                android:title="Share"
+                android:fontFamily="sans-serif-light"/>
         </menu>
     </item>
 

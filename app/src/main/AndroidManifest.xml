@@ -8,9 +8,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:titleTextColor="@color/colorTitle"
-        android:theme="@style/AppTheme">
-
+        android:theme="@style/AppTheme"
+        android:titleTextColor="@color/colorTitle">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,15 +17,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MessagingPageActivity" android:parentActivityName=".MainActivity"></activity>
+        <activity
+            android:name=".MessagingPageActivity"
+            android:parentActivityName=".MainActivity" />
 
-        <service
-            android:name=".MyFirebaseMessagingService">
+        <service android:name=".MyFirebaseMessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
 
+        <activity android:name=".ProfileActivity"></activity>
     </application>
 
 </manifest>

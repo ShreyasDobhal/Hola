@@ -14,4 +14,6 @@
     <color name="colorLikeSymbol">#bf283f</color>
     <color name="colorUnreadMsgBackgrund">#3275a8</color>
     <color name="colorSeenTickMark">#2453d4</color>
+    <color name="colorGradEnd">#5a8fe8</color>
+    <color name="colorGradStart">#0e3d8c</color>
 </resources>
