@@ -27,6 +27,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
@@ -47,6 +48,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessagingPageActivity extends AppCompatActivity  {
 
@@ -106,6 +109,15 @@ public class MessagingPageActivity extends AppCompatActivity  {
             Log.e("LOG","toolbar null");
         } else {
             TextView toolbarTxt = (TextView) toolbar.findViewById(R.id.toolbar_text);
+            CircleImageView profileImgTool = (CircleImageView) toolbar.findViewById(R.id.toolbar_profile_image);
+
+            if (otherUser.getDisplayImgPath()!=null) {
+                Glide.with(profileImgTool.getContext())
+                        .load(otherUser.getDisplayImgPath())
+                        .into(profileImgTool);
+            }
+
+
             String firstName = otherUser.getName();
             if (firstName.indexOf(' ')!=-1)
                 firstName = firstName.substring(0,firstName.indexOf(' '));

@@ -8,7 +8,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ContactDisplayAdapter extends ArrayAdapter<ContactDisplay> {
 
@@ -31,6 +35,13 @@ public class ContactDisplayAdapter extends ArrayAdapter<ContactDisplay> {
         txtLastMsg.setText(contact.getLastMessage());
         TextView txtLstMsgTime = (TextView) listItemView.findViewById(R.id.message_time);
         txtLstMsgTime.setText(contact.getLastMessageTime());
+        CircleImageView imgProfile = (CircleImageView) listItemView.findViewById(R.id.profile_image);
+        if (contact.getDisplayImgPath()!=null) {
+            Glide.with(imgProfile.getContext())
+                    .load(contact.getDisplayImgPath())
+                    .into(imgProfile);
+        }
+
 //        ImageView img = (ImageView)listItemView.findViewById(R.id.image);
 //        img.setImageResource(contact.getDisplayImgPath());
 

@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class ContactDisplay implements Serializable {
     private String name;
-    private int displayImgPath;
+    private String displayImgPath;
     private String uid;
     private String fcmToken;
     private String lastMessage="";
@@ -19,7 +19,10 @@ public class ContactDisplay implements Serializable {
         return name;
     }
 
-    public int getDisplayImgPath() {
+    public void setDisplayImgPath(String displayImgPath) {
+        this.displayImgPath = displayImgPath;
+    }
+    public String getDisplayImgPath() {
         return displayImgPath;
     }
 

@@ -28,6 +28,7 @@ import android.widget.Toast;
 //import com.google.firebase.auth.FirebaseAuth;
 //import com.google.firebase.auth.FirebaseUser;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -44,6 +45,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -73,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout drawer;
     private NavigationView navigationView;
+    private CircleImageView profileImgNav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -195,6 +199,7 @@ public class MainActivity extends AppCompatActivity {
     private void onSignedInInitialize(FirebaseUser user) {
 
         currentUser = new User(user.getDisplayName());
+//        currentUser = new User();
         currentUser.setUID(user.getUid());
         currentUser.setFCMToken(FirebaseInstanceId.getInstance().getToken());
 
@@ -202,6 +207,7 @@ public class MainActivity extends AppCompatActivity {
 
         TextView usrTxt = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_username);
         TextView emailTxt = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_email);
+        profileImgNav = (CircleImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_profile_image);
 
         usrTxt.setText(currentUser.getUsername());
         emailTxt.setText(user.getEmail());
@@ -224,7 +230,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    Toast.makeText(getApplicationContext(),"Welcome "+currentUser.getUsername(),Toast.LENGTH_SHORT).show();
+                    if (State.getState()==State.NEW) {
+                        Toast.makeText(getApplicationContext(), "Welcome " + currentUser.getUsername(), Toast.LENGTH_SHORT).show();
+                        State.setState(State.OLD);
+                    }
                 } else {
                     // New User Sign-up
                     mMessagesDatabaseReference.push().setValue(currentUser);
@@ -254,12 +263,23 @@ public class MainActivity extends AppCompatActivity {
                 if (!user.getUID().equals(currentUser.getUID())) {
                     ContactDisplay contact = new ContactDisplay(user.getUsername(),user.getUID());
                     contact.setFCMToken(user.getFCMToken());
+                    contact.setDisplayImgPath(user.getImageURL());
 //                    dataSnapshot.
 //                    contact.setLastMessage();
                     Log.e("LSTMSG","other user "+user.getUsername());
                     contacts.add(contact);
                     usersMap.put(user.getUID(),contact);
                     itemsAdapter.notifyDataSetChanged();
+                } else {
+                    currentUser.setUsername(user.getUsername());
+                    currentUser.setImageURL(user.getImageURL());
+                    if (currentUser.getImageURL()!=null) {
+                        Glide.with(profileImgNav.getContext())
+                                .load(currentUser.getImageURL())
+                                .into(profileImgNav);
+
+                    }
+
                 }
             }
 

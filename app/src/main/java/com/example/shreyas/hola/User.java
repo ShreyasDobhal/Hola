@@ -6,6 +6,7 @@ public class User implements Serializable {
     private String username;
     private String uid;
     private String fcmToken;
+    private String imageURL;
     public User() {
 
     }
@@ -30,5 +31,12 @@ public class User implements Serializable {
     }
     public void setFCMToken(String fcmToken) {
         this.fcmToken=fcmToken;
+    }
+
+    public String getImageURL() {
+        return imageURL;
+    }
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
 }
