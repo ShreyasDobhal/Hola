@@ -67,7 +67,7 @@ public class ProfileActivity extends AppCompatActivity {
         btnDone = (Button) findViewById(R.id.btn_done);
         imgProfile = (CircleImageView) findViewById(R.id.profile_image);
 
-        Log.e("IMG",currentUser.getImageURL());
+//        Log.e("IMG",currentUser.getImageURL());
         if (currentUser.getImageURL()!=null) {
             Glide.with(imgProfile.getContext())
                     .load(currentUser.getImageURL())
@@ -152,9 +152,12 @@ public class ProfileActivity extends AppCompatActivity {
 //                        txtInput.setText("Image");
                         Log.e("IMG","Image URL : "+downloadUrl);
                         Log.e("IMG","Setting new image");
-                        Glide.with(imgProfile.getContext())
-                                .load(imageURL)
-                                .into(imgProfile);
+                        if (imageURL!=null) {
+                            Glide.with(imgProfile.getContext())
+                                    .load(imageURL)
+                                    .into(imgProfile);
+                        }
+
 //                        Toast.makeText(getApplicationContext(), "Upload successful", Toast.LENGTH_LONG).show();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -174,14 +177,14 @@ public class ProfileActivity extends AppCompatActivity {
 //                        txtInput.setText("Image");
                         Log.e("IMG","Image URL : "+downloadUrl);
                         Log.e("IMG","Setting new image");
-                        Glide.with(imgProfile.getContext())
-                                .load(imageURL)
-                                .into(imgProfile);
+                        if (imageURL!=null) {
+                            Glide.with(imgProfile.getContext())
+                                    .load(imageURL)
+                                    .into(imgProfile);
+                        }
+
                     }
                 });
-            } finally {
-
-
             }
 
 //            ImageView imgView = (ImageView) findViewById(R.id.profile_image);

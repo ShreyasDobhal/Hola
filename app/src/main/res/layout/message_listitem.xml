@@ -8,95 +8,132 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/message_block"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
-        android:background="@color/colorMessageBackground"
-        android:padding="5dp">
+        android:orientation="horizontal">
 
-
-        <TextView
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/message_user"
-            android:text="You"
-            android:layout_marginEnd="4dp"
-            android:textColor="@color/colorNameText"/>
+            android:layout_height="wrap_content">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/profile_image_message"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@drawable/face2"
+                app:civ_border_width="2dp"
+                app:civ_border_color="#EEEEEE"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="20dp"
+                android:layout_gravity="center"/>
+
+            <RelativeLayout
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="20dp">
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minWidth="150sp"
             android:orientation="vertical"
-            android:id="@+id/reply_block"
-            android:background="@color/colorMessageDarkerBackground"
+            android:id="@+id/message_block"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:background="@color/colorMessageBackground"
+            android:padding="5dp">
 
-            android:padding="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/message_replyToUser"
-                android:text="Anonymous"
+                android:id="@+id/message_user"
+                android:text="You"
                 android:layout_marginEnd="4dp"
                 android:textColor="@color/colorNameText"/>
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="150sp"
+                android:orientation="vertical"
+                android:id="@+id/reply_block"
+                android:background="@color/colorMessageDarkerBackground"
+
+                android:padding="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/message_replyToUser"
+                    android:text="Anonymous"
+                    android:layout_marginEnd="4dp"
+                    android:textColor="@color/colorNameText"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/message_replyToMessage"
+                    android:text="Hola"
+                    android:padding="2dp"
+                    android:layout_margin="3dp"/>
+
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:id="@+id/message_image"
+
+                android:maxWidth="10dp"
+                android:padding="5dp"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hello"
+                    android:textSize="17sp"
+                    android:id="@+id/message_text"
+                    android:layout_marginRight="40dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="10:52"
+                    android:id="@+id/message_time"
+                    android:textColor="#999"
+                    android:textSize="10dp"
+                    android:layout_marginLeft="-30dp"
+                    android:layout_gravity="bottom"/>
+            </LinearLayout>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/message_replyToMessage"
-                android:text="Hola"
-                android:padding="2dp"
-                android:layout_margin="3dp"/>
+                android:id="@+id/message_like"
+                android:text="♥"
+                android:layout_marginLeft="2dp"
+                android:textColor="@color/colorLikeSymbol"/>
+
 
         </LinearLayout>
-
-        <ImageView
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            android:id="@+id/message_image"
-
-            android:maxWidth="10dp"
-            android:padding="5dp"/>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Hello"
-                android:textSize="17sp"
-                android:id="@+id/message_text"
-                android:layout_marginRight="40dp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="10:52"
-                android:id="@+id/message_time"
-                android:textColor="#999"
-                android:textSize="10dp"
-                android:layout_marginLeft="-30dp"
-                android:layout_gravity="bottom"/>
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/message_like"
-            android:text="♥"
-            android:layout_marginLeft="2dp"
-            android:textColor="@color/colorLikeSymbol"/>
 
 
     </LinearLayout>
+
+
 
 
 </RelativeLayout>

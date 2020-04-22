@@ -19,6 +19,8 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class ChatMessageAdapter extends ArrayAdapter<ChatMessage> {
 
 
@@ -54,10 +56,9 @@ public class ChatMessageAdapter extends ArrayAdapter<ChatMessage> {
         TextView replyToMsgTxt = (TextView) listItemView.findViewById(R.id.message_replyToMessage);
         ImageView imgView = (ImageView)listItemView.findViewById(R.id.message_image);
         TextView likeTxt = (TextView) listItemView.findViewById(R.id.message_like);
-
+        CircleImageView imgProfile = (CircleImageView) listItemView.findViewById(R.id.profile_image_message);
 
         if (chatMessage.getReplyToMessage() == null || chatMessage.getReplyToMessage().equals("")) {
-//            message_block.removeView(reply_block);
             reply_block.setVisibility(View.GONE);
             Log.e("LOG","not a reply");
         } else {
@@ -70,20 +71,30 @@ public class ChatMessageAdapter extends ArrayAdapter<ChatMessage> {
             Log.e("LOG","replying done");
         }
 
+        if (!chatMessage.getIsMessageSent()) {
+            int nextIndex = position+1;
+            if (getCount()<=nextIndex || getItem(nextIndex)!=null && getItem(nextIndex).getIsMessageSent()) {
+                imgProfile.setVisibility(View.VISIBLE);
+                if (State.getOtherUser()!=null && State.getOtherUser().getDisplayImgPath()!=null) {
+                    Glide.with(imgProfile.getContext())
+                            .load(State.getOtherUser().getDisplayImgPath())
+                            .into(imgProfile);
+                }
+            } else {
+                imgProfile.setVisibility(View.GONE);
+            }
+
+        } else {
+            imgProfile.setVisibility(View.GONE);
+        }
+
         if (chatMessage.getImageURL() == null) {
-//            message_block.removeView(img);
             imgView.setVisibility(View.GONE);
         } else {
-            // TODO display image
-//            boolean isPhoto = message.getPhotoUrl() != null;
-
             imgView.setVisibility(View.VISIBLE);
             Glide.with(imgView.getContext())
                     .load(chatMessage.getImageURL())
                     .into(imgView);
-
-
-
         }
 
         if (chatMessage.getIsLiked()) {

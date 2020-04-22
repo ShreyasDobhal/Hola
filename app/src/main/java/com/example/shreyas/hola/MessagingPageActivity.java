@@ -104,6 +104,8 @@ public class MessagingPageActivity extends AppCompatActivity  {
         otherUser = (ContactDisplay) getIntent().getSerializableExtra("ContactDisplay");
         currentUser = (User) getIntent().getSerializableExtra("User");
 
+        State.setOtherUser(otherUser);
+
 
         if (toolbar==null) {
             Log.e("LOG","toolbar null");

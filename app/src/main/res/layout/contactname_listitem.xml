@@ -22,8 +22,7 @@
             app:civ_border_color="#EEEEEE"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="2dp"
-            android:layout_gravity="center"
-            />
+            android:layout_gravity="center"/>
 
         <!--
         <ImageView

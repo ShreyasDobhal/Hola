@@ -114,6 +114,9 @@ public class MainActivity extends AppCompatActivity {
                                     }})
                                 .setNegativeButton(android.R.string.no, null).show();
                         break;
+                    case R.id.nav_share:
+
+                        break;
                 }
                 drawer.closeDrawer(GravityCompat.START);
                 return true;
