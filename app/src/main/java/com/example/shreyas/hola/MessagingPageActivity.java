@@ -73,6 +73,7 @@ public class MessagingPageActivity extends AppCompatActivity  {
     private HashMap<String,Integer> chatMessageIndexMap;
     private ArrayList<String> chatMessagePair;
     private ChatMessageAdapter itemsAdapter;
+    private Set<String> markedDates;
 
     private ContactDisplay otherUser;
     private User currentUser;
@@ -131,6 +132,7 @@ public class MessagingPageActivity extends AppCompatActivity  {
         chatMessageMap = new HashMap<>();
         chatMessageIndexMap = new HashMap<>();
         chatMessagePair = new ArrayList<>();
+        markedDates = new HashSet<>();
 
         itemsAdapter = new ChatMessageAdapter(this, chatMessages);
         final ListView listView = (ListView) findViewById(R.id.list_of_message);
@@ -203,6 +205,14 @@ public class MessagingPageActivity extends AppCompatActivity  {
 
                     txtInput.setText("");
 
+                    String dateLabel = timeStamp.getDate();
+                    if (!markedDates.contains(dateLabel)) {
+                        ChatMessage dateMessage = new ChatMessage(dateLabel,"","");
+                        dateMessage.setIsDateLabel(true);
+                        mMessagesDatabaseReference1.push().setValue(dateMessage);
+                        mMessagesDatabaseReference2.push().setValue(dateMessage);
+                    }
+
                     mMessagesDatabaseReference1.push().setValue(sentMessage);
                     mMessagesDatabaseReference2.push().setValue(receivedMessage);
 
@@ -244,6 +254,9 @@ public class MessagingPageActivity extends AppCompatActivity  {
                 } else {
                     clickCount+=1;
                 }
+
+                if (chatMessages.get(i).getIsDateLabel())
+                    return;
 
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
@@ -291,6 +304,10 @@ public class MessagingPageActivity extends AppCompatActivity  {
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                if (chatMessages.get(i).getIsDateLabel())
+                    return false;
+
                 if (replyMessage == chatMessages.get(i)) {
                     Toast.makeText(getApplicationContext(),"Selection cleared",Toast.LENGTH_SHORT).show();
                     replyMessage = null;
@@ -319,6 +336,10 @@ public class MessagingPageActivity extends AppCompatActivity  {
 //                    queue1.add(message.getId());
                     chatMessages.add(message);
                     itemsAdapter.notifyDataSetChanged();
+                    if (message.getIsDateLabel()) {
+                        markedDates.add(message.getMessageText());
+                    }
+
                 }
 
                 @Override

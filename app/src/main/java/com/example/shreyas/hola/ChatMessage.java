@@ -9,6 +9,7 @@ public class ChatMessage {
     private String replyToMessage;
     private String imageURL;
     private boolean isLiked;
+    private boolean isDateLabel;
     private boolean isMessageSent;
     private String id;
     private String replyId;
@@ -115,6 +116,14 @@ public class ChatMessage {
 
     public String getPairId() {
         return pairId;
+    }
+
+    public void setIsDateLabel(boolean isDateLabel) {
+        this.isDateLabel = isDateLabel;
+    }
+
+    public boolean getIsDateLabel() {
+        return isDateLabel;
     }
 }
 

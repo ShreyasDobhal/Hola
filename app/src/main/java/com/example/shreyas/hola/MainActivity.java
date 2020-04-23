@@ -88,6 +88,8 @@ public class MainActivity extends AppCompatActivity {
         TextView toolbarTxt = (TextView) toolbar.findViewById(R.id.toolbar_text);
         toolbarTxt.setText("Hola");
 
+//        Log.e("DATE",timeStamp.getDate());
+
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -115,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
                                 .setNegativeButton(android.R.string.no, null).show();
                         break;
                     case R.id.nav_share:
-
+                        // TODO Add functionality for Share
                         break;
                 }
                 drawer.closeDrawer(GravityCompat.START);

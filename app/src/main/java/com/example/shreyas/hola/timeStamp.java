@@ -17,4 +17,10 @@ public class timeStamp {
         String tm = dtf.format(now);
         return tm;
     }
+    public static String getDate() {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd MMMM yyyy");
+        LocalDateTime now = LocalDateTime.now();
+        String tm = dtf.format(now);
+        return tm;
+    }
 }
