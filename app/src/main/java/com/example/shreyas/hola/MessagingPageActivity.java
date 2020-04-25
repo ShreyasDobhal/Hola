@@ -109,7 +109,7 @@ public class MessagingPageActivity extends AppCompatActivity  {
 
 
         if (toolbar==null) {
-            Log.e("LOG","toolbar null");
+            Log.i("TOOLBAR","toolbar null");
         } else {
             TextView toolbarTxt = (TextView) toolbar.findViewById(R.id.toolbar_text);
             CircleImageView profileImgTool = (CircleImageView) toolbar.findViewById(R.id.toolbar_profile_image);
@@ -169,7 +169,7 @@ public class MessagingPageActivity extends AppCompatActivity  {
                     receivedMessage.setPairId("");
 
                     if (replyMessage != null) {
-                        Log.e("LOG","replying to message");
+                        Log.i("REPLY","replying to message");
                         if (replyMessage.getMessageUser().equals("You")) {
                             sentMessage.setReplyToUser("You");
                             receivedMessage.setReplyToUser(currentUser.getUsername());
@@ -187,7 +187,7 @@ public class MessagingPageActivity extends AppCompatActivity  {
                         sentMessage.setReplyId(replyMessage.getId());
                         receivedMessage.setReplyId(chatMessagePair.get(chatMessageIndexMap.get(replyMessage.getId())));
 
-                        Log.e("LOG",sentMessage.getReplyToUser()+" "+sentMessage.getReplyToMessage());
+                        Log.i("REPLY",sentMessage.getReplyToUser()+" "+sentMessage.getReplyToMessage());
 
                         replyMessage = null;
                     } else {
@@ -269,8 +269,8 @@ public class MessagingPageActivity extends AppCompatActivity  {
                                     int pos;
                                     if (chatMessageIndexMap.containsKey(chatMessages.get(i).getReplyId())) {
                                         pos = chatMessageIndexMap.get(chatMessages.get(i).getReplyId());
-                                        Log.e("LOG","Reply message Position "+pos);
-                                        listView.setSelection(pos);
+                                        Log.i("REPLY","Reply message Position "+pos);
+                                        listView.setSelection(Math.max(pos-1,0));
                                     } else {
 //                                        pos = chatMessagePair
                                     }
@@ -290,7 +290,7 @@ public class MessagingPageActivity extends AppCompatActivity  {
                             mMessagesDatabaseReference1.child(chatMessages.get(i).getId()).child("isLiked").setValue(likeVal);
                             mMessagesDatabaseReference2.child(chatMessagePair.get(i)).child("isLiked").setValue(likeVal);
 
-                            Log.e("LOG","liked : "+likeVal);
+                            Log.i("LIKE","liked : "+likeVal);
 //                            Toast.makeText(getApplicationContext(),"Double Click",Toast.LENGTH_SHORT).show();
                         }
                         clickCount=0;
@@ -421,9 +421,9 @@ public class MessagingPageActivity extends AppCompatActivity  {
     public void onActivityResult(int requestCode,int resultCode,Intent data) {
 
         super.onActivityResult(requestCode,resultCode,data);
-        Log.e("LOG","Activity executed");
+        Log.i("PHOTO","Activity executed");
         if (requestCode == RC_PHOTO_PICKER && resultCode == RESULT_OK) {
-            Log.e("LOG","Selected a file");
+            Log.i("PHOTO","Selected a file");
 
             Uri selectedImageUri = data.getData();
             StorageReference photoRef = mChatPhotoStorageReference.child(selectedImageUri.getLastPathSegment());
@@ -438,12 +438,12 @@ public class MessagingPageActivity extends AppCompatActivity  {
                 uploadTask2.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Log.e("LOG","Compressed successfully");
+                        Log.i("PHOTO","Compressed successfully");
                         Uri downloadUrl = taskSnapshot.getDownloadUrl();
                         imageURL = downloadUrl.toString();
                         Toast.makeText(getApplicationContext(),"Photo uploaded",Toast.LENGTH_SHORT).show();
                         txtInput.setText("Image");
-                        Log.e("LOG","Image URL : "+downloadUrl);
+                        Log.i("PHOTO","Image URL : "+downloadUrl);
 //                        Toast.makeText(getApplicationContext(), "Upload successful", Toast.LENGTH_LONG).show();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -453,7 +453,7 @@ public class MessagingPageActivity extends AppCompatActivity  {
                     }
                 });
             } catch (Exception e) {
-                Log.e("LOG","Failed to compress");
+                Log.i("PHOTO","Failed to compress");
                 photoRef.putFile(selectedImageUri).addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -461,7 +461,7 @@ public class MessagingPageActivity extends AppCompatActivity  {
                         imageURL = downloadUrl.toString();
                         Toast.makeText(getApplicationContext(),"Photo uploaded",Toast.LENGTH_SHORT).show();
                         txtInput.setText("Image");
-                        Log.e("LOG","Image URL : "+downloadUrl);
+                        Log.i("PHOTO","Image URL : "+downloadUrl);
                     }
                 });
             }

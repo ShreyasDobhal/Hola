@@ -28,6 +28,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+//import com.theartofdev.edmodo.cropper.CropImage;
+//import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.ByteArrayOutputStream;
 
@@ -67,7 +69,7 @@ public class ProfileActivity extends AppCompatActivity {
         btnDone = (Button) findViewById(R.id.btn_done);
         imgProfile = (CircleImageView) findViewById(R.id.profile_image);
 
-//        Log.e("IMG",currentUser.getImageURL());
+//        Log.i("IMG",currentUser.getImageURL());
         if (currentUser.getImageURL()!=null) {
             Glide.with(imgProfile.getContext())
                     .load(currentUser.getImageURL())
@@ -95,7 +97,7 @@ public class ProfileActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot datasnapshot:dataSnapshot.getChildren()) {
-                            Log.e("USER","old info : "+datasnapshot.toString());
+                            Log.i("USER","old info : "+datasnapshot.toString());
                             if (!name.isEmpty() && !name.equals(currentUser.getUsername())) {
                                 datasnapshot.getRef().child("username").setValue(name);
                             }
@@ -128,11 +130,31 @@ public class ProfileActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode,int resultCode,Intent data) {
 
         super.onActivityResult(requestCode,resultCode,data);
-        Log.e("IMG","Activity executed");
+        Log.i("IMG","Activity executed");
         if (requestCode == RC_PHOTO_PICKER && resultCode == RESULT_OK) {
-            Log.e("IMG","Selected a file");
+            Log.i("IMG","Selected a file");
 
             Uri selectedImageUri = data.getData();
+
+            // Crop Image
+//            CropImage.activity()
+//                    .setGuidelines(CropImageView.Guidelines.ON)
+//                    .setAspectRatio(1,1)
+//                    .start(this);
+//
+//            if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+//                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+//
+////
+////                if (resultCode == RESULT_OK) {
+////                    Uri resultUri = result.getUri();
+////                } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+////                    Exception error = result.getError();
+////                }
+//            }
+
+
+
             StorageReference photoRef = mChatPhotoStorageReference.child(selectedImageUri.getLastPathSegment());
 
             try {
@@ -145,13 +167,13 @@ public class ProfileActivity extends AppCompatActivity {
                 uploadTask2.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Log.e("IMG","Compressed successfully");
+                        Log.i("IMG","Compressed successfully");
                         Uri downloadUrl = taskSnapshot.getDownloadUrl();
                         imageURL = downloadUrl.toString();
                         Toast.makeText(getApplicationContext(),"Photo uploaded",Toast.LENGTH_SHORT).show();
 //                        txtInput.setText("Image");
-                        Log.e("IMG","Image URL : "+downloadUrl);
-                        Log.e("IMG","Setting new image");
+                        Log.i("IMG","Image URL : "+downloadUrl);
+                        Log.i("IMG","Setting new image");
                         if (imageURL!=null) {
                             Glide.with(imgProfile.getContext())
                                     .load(imageURL)
@@ -167,7 +189,7 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                 });
             } catch (Exception e) {
-                Log.e("IMG","Failed to compress");
+                Log.i("IMG","Failed to compress");
                 photoRef.putFile(selectedImageUri).addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -175,8 +197,8 @@ public class ProfileActivity extends AppCompatActivity {
                         imageURL = downloadUrl.toString();
                         Toast.makeText(getApplicationContext(),"Photo uploaded",Toast.LENGTH_SHORT).show();
 //                        txtInput.setText("Image");
-                        Log.e("IMG","Image URL : "+downloadUrl);
-                        Log.e("IMG","Setting new image");
+                        Log.i("IMG","Image URL : "+downloadUrl);
+                        Log.i("IMG","Setting new image");
                         if (imageURL!=null) {
                             Glide.with(imgProfile.getContext())
                                     .load(imageURL)

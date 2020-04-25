@@ -1,17 +1,24 @@
 package com.example.shreyas.hola;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
+
 public class NotificationHelper {
 
 
+    // Notifications
+    private static final String CHANNEL_ID="shreyas_dobhal";
 
-    public static final String CHANNEL_ID="shreyas_dobhal";
 
     public static void displayNotification(Context context,String title,String text) {
 
@@ -25,10 +32,15 @@ public class NotificationHelper {
                         .setContentText(text)
                         .setContentIntent(pendingIntent)
                         .setAutoCancel(true)
-                        .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                        .setSmallIcon(R.drawable.face)
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setCategory(NotificationCompat.CATEGORY_MESSAGE);
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
         notificationManagerCompat.notify(1,mBuilder.build());
-        Log.e("LOG","Notification sent");
+        Log.i("NOTIFY","Notification sent");
+        Log.i("NOTIFY",title+" "+text);
     }
+
+
 
 }

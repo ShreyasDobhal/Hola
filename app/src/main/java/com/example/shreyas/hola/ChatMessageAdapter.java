@@ -69,15 +69,15 @@ public class ChatMessageAdapter extends ArrayAdapter<ChatMessage> {
 
             if (chatMessage.getReplyToMessage() == null || chatMessage.getReplyToMessage().equals("")) {
                 reply_block.setVisibility(View.GONE);
-                Log.e("LOG","not a reply");
+//                Log.i("LOG","not a reply");
             } else {
                 reply_block.setVisibility(View.VISIBLE);
                 if (replyToMsgTxt == null) {
-                    Log.e("LOG","replyToMsgTxt was null");
+//                    Log.i("LOG","replyToMsgTxt was null");
                 }
                 replyToMsgTxt.setText(chatMessage.getReplyToMessage());
                 replyToUserTxt.setText(chatMessage.getReplyToUser());
-                Log.e("LOG","replying done");
+                Log.i("REPLY","replying done");
             }
 
             if (!chatMessage.getIsMessageSent()) {

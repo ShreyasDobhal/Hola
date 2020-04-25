@@ -61,10 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference mMessagesDatabaseReferenceLastMsg;
     private ChildEventListener mChildEventListener;
 
-    // Notifications
-    private static final String CHANNEL_ID="shreyas_dobhal";
-    private static final String CHANNEL_NAME="Shreyas";
-    private static final String CHANNEL_DESC = "Notification example";
+
 
     private ContactDisplayAdapter itemsAdapter;
 
@@ -88,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         TextView toolbarTxt = (TextView) toolbar.findViewById(R.id.toolbar_text);
         toolbarTxt.setText("Hola");
 
-//        Log.e("DATE",timeStamp.getDate());
+//        Log.i("DATE",timeStamp.getDate());
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
@@ -97,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.nav_edit_name:
-                        Log.e("PROFILE","Going to edit profile");
+                        Log.i("PROFILE","Going to edit profile");
                         Intent intent = new Intent(MainActivity.this,ProfileActivity.class);
                         intent.putExtra("User",currentUser);
                         MainActivity.this.startActivity(intent);
@@ -271,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
                     contact.setDisplayImgPath(user.getImageURL());
 //                    dataSnapshot.
 //                    contact.setLastMessage();
-                    Log.e("LSTMSG","other user "+user.getUsername());
+                    Log.i("LSTMSG","other user "+user.getUsername());
                     contacts.add(contact);
                     usersMap.put(user.getUID(),contact);
                     itemsAdapter.notifyDataSetChanged();
@@ -313,12 +310,12 @@ public class MainActivity extends AppCompatActivity {
         mMessagesDatabaseReferenceLastMsg.child(currentUser.getUID()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Log.e("LOG","child added");
+                Log.i("LOG","child added");
                 HashMap<String,Object> lstMsg = (HashMap<String,Object>)dataSnapshot.getValue();
-                Log.e("LOG","Data "+lstMsg.toString());
+//                Log.i("LOG","Data "+lstMsg.toString());
                 if (lstMsg != null) {
                     lstMsg = (HashMap<String,Object>)lstMsg.get("message");
-                    Log.e("LSTMSG","last message not null "+lstMsg.get("messageText").toString());
+                    Log.i("LSTMSG",lstMsg.get("messageText").toString());
                     String lastMessageText = lstMsg.get("messageText").toString();
                     if (lastMessageText!=null && lastMessageText.length() > 30) {
                         lastMessageText = lastMessageText.substring(0,30)+"..";
@@ -331,12 +328,12 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                Log.e("LOG","child added");
+                Log.i("LOG","child added");
                 HashMap<String,Object> lstMsg = (HashMap<String,Object>)dataSnapshot.getValue();
-                Log.e("LOG","Data "+lstMsg.toString());
+//                Log.i("LOG","Data "+lstMsg.toString());
                 if (lstMsg != null) {
                     lstMsg = (HashMap<String,Object>)lstMsg.get("message");
-                    Log.e("LSTMSG","last message not null "+lstMsg.get("messageText").toString());
+                    Log.i("LSTMSG",lstMsg.get("messageText").toString());
                     String lastMessageText = lstMsg.get("messageText").toString();
                     if (lastMessageText!=null && lastMessageText.length() > 30) {
                         lastMessageText = lastMessageText.substring(0,30)+"..";
@@ -442,21 +439,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void notificationInit() {
 
-        FirebaseMessaging.getInstance().subscribeToTopic("Updates");
-
-        String id = FirebaseInstanceId.getInstance().getToken();
-        Log.e("LOG","FCM "+id);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Log.e("LOG","Creating channel");
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
-            channel.setDescription(CHANNEL_DESC);
-            NotificationManager manager = getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(channel);
-        }
-    }
 
     private void detachListener() {
 
